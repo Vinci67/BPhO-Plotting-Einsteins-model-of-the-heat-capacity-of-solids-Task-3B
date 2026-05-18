@@ -1,5 +1,7 @@
-using ScottPlot;
 using MathNet.Numerics;
+using Microsoft.VisualBasic.Devices;
+using ScottPlot;
+using ScottPlot.Plottables;
 using System.Diagnostics;
 using System.Numerics;
 namespace BPhO__Plotting_Planck_Spectrum_Task_3
@@ -12,13 +14,18 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         public double c = 2.998E8;
         public double minW = 200E-9;
         public double maxW = 2500E-9;
+        public ScottPlot.Plottables.Crosshair crosshair;
+        private ScottPlot.Plottables.Scatter graph1;
+        private bool rbNearestXY = true;
+        private List<ScottPlot.Plottables.Scatter> graphs = new List<ScottPlot.Plottables.Scatter>();
+
         public Form1()
         {
             
             InitializeComponent();
-            generatePlot(minW, maxW, 4000, ScottPlot.Colors.Blue);
-            generatePlot(minW, maxW, 5000, ScottPlot.Colors.Orange);
-            generatePlot(minW, maxW, 6000, ScottPlot.Colors.Red);
+            graphs.Add(generatePlot(minW, maxW, 4000, ScottPlot.Colors.Blue));
+            graphs.Add(generatePlot(minW, maxW, 5000, ScottPlot.Colors.Orange));
+            graphs.Add(generatePlot(minW, maxW, 6000, ScottPlot.Colors.Red));
             formsPlot1.Plot.XLabel("Wavelength / nm");
             formsPlot1.Plot.YLabel("Irradiance / Wm^-2/nm     x10^4");
             formsPlot1.Plot.Title("Solar Irradiance vs Wavelength");
@@ -26,6 +33,45 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             ScottPlot.Coordinates coords = formsPlot1.Plot.GetCoordinates(new Pixel(400, 9));
             formsPlot1.Plot.XLabel(Convert.ToString(coords));
             formsPlot1.Refresh();
+            crosshair = formsPlot1.Plot.Add.Crosshair(10, 10);
+            crosshair.IsVisible = true;
+            crosshair.MarkerShape = MarkerShape.OpenCircle;
+            crosshair.MarkerSize = 15;
+            formsPlot1.MouseMove += (s, e) =>
+            {
+                Pixel mousePixel = new(e.Location.X, e.Location.Y);
+                Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
+                DataPoint closestPoint = DataPoint.None;
+                double closestDistance2 = double.MaxValue;
+                for (int i = 0; i < graphs.Count; i++) 
+                {
+                    DataPoint nearest = rbNearestXY
+                       ? graphs[i].Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
+                       : graphs[i].Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
+                    double distance2 = Math.Pow(nearest.X - mouseLocation.X,2) + Math.Pow(nearest.Y - mouseLocation.Y,2);
+                    if (distance2 < closestDistance2)
+                    {
+                        closestDistance2 = distance2;
+                        closestPoint = nearest;
+                    }
+                }
+               
+                
+                if (closestPoint.IsReal)
+                {
+                    crosshair.IsVisible = true;
+                    crosshair.Position = closestPoint.Coordinates;
+                    formsPlot1.Refresh();
+                    Text = $"Wavelength={closestPoint.X:0.##}nm, Y={closestPoint.Y*1E4:0.##}Wm^-2/nm";//Selected Index={closestPoint.Index},
+                }
+                if (!closestPoint.IsReal && crosshair.IsVisible)
+                {
+                    crosshair.IsVisible = false;
+                    formsPlot1.Refresh();
+                    Text = $"No point selected";
+                }
+            };
+            
             
         }
 
@@ -35,7 +81,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             return 1E-13*Math.PI*(2 * h * c * c) / (Math.Pow(wavelength,5)) * (1 / (Math.Exp(h * c / (wavelength * kB * temp))-1.0)); // return in nm *E4
         }
 
-        private void generatePlot(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color)
+        private ScottPlot.Plottables.Scatter generatePlot(double minWavelength, double maxWavelength, double temp, ScottPlot.Color color)
         {
             double[] dataWalength = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength, maxWavelength);
             double[] dataWavelengthPlotting = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength*1E9, maxWavelength*1E9); // l in nm
@@ -51,6 +97,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             line.Color = color;
             line.Label = Convert.ToString(temp);
             formsPlot1.Refresh();
+            return line;
         }
     }
 }
