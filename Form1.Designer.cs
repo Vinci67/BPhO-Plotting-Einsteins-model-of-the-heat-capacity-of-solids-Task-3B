@@ -30,6 +30,7 @@
         private void InitializeComponent()
         {
             formsPlot1 = new ScottPlot.WinForms.FormsPlot();
+            textBox1 = new TextBox();
             SuspendLayout();
             // 
             // formsPlot1
@@ -39,20 +40,30 @@
             formsPlot1.Size = new Size(788, 447);
             formsPlot1.TabIndex = 0;
             // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(528, 12);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(246, 27);
+            textBox1.TabIndex = 1;
+            textBox1.Text = "Click a line to lock in the slider for it";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(textBox1);
             Controls.Add(formsPlot1);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private ScottPlot.WinForms.FormsPlot formsPlot1;
-        
+        private TextBox textBox1;
     }
 }
