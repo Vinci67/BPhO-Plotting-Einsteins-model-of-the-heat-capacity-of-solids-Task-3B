@@ -31,6 +31,7 @@
         {
             formsPlot1 = new ScottPlot.WinForms.FormsPlot();
             textBox1 = new TextBox();
+            buttonAddLine = new Button();
             SuspendLayout();
             // 
             // formsPlot1
@@ -48,11 +49,21 @@
             textBox1.TabIndex = 1;
             textBox1.Text = "Click a line to lock in the slider for it";
             // 
+            // buttonAddLine
+            // 
+            buttonAddLine.Location = new Point(680, 36);
+            buttonAddLine.Name = "buttonAddLine";
+            buttonAddLine.Size = new Size(94, 29);
+            buttonAddLine.TabIndex = 2;
+            buttonAddLine.Text = "Add Line";
+            buttonAddLine.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(buttonAddLine);
             Controls.Add(textBox1);
             Controls.Add(formsPlot1);
             Name = "Form1";
@@ -65,5 +76,6 @@
 
         private ScottPlot.WinForms.FormsPlot formsPlot1;
         private TextBox textBox1;
+        private Button buttonAddLine;
     }
 }

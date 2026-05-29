@@ -20,6 +20,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private bool rbNearestXY = false; // set to false if want to make crosshair always visible, set to true if only want it visible near the line
         private List<GraphLine> graphs = new List<GraphLine>();
         private bool toggleForMouse = false;
+        private Random rand = new Random();
         public Form1()
         {
             
@@ -66,7 +67,6 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 {
                     if (toggleForMouse == false)
                     {
-                        Debug.WriteLine(toggleForMouse);
                         graphs[specificGraphI].slider.Visible = true;
                         crosshair.IsVisible = true;
                         crosshair.Position = closestPoint.Coordinates;
@@ -89,11 +89,16 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 textBox1.Visible = false;
                 if (toggleForMouse)
                 {
-                    
                     toggleForMouse = false;
                 }
                 else toggleForMouse = true;
 
+            };
+
+            buttonAddLine.Click += (s, e) =>
+            {
+                
+                graphs.Add(generateLine(minW, maxW, rand.Next(1,100)*100, ScottPlot.Color.RandomHue()));
             };
             
             
