@@ -113,7 +113,6 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         {
             dataWalength = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength, maxWavelength);
             dataWavelengthPlotting = MathNet.Numerics.Generate.LinearSpaced(1000, minWavelength * 1E9, maxWavelength * 1E9); // l in nm
-            //line = scottForm.Plot.Add.Scatter(dataWavelengthPlotting, irradiance);
             double highestI = 0;
             datapointsInvisibleRange = 0;
             for (int i = 0; i < dataWalength.Length; i++)
@@ -131,10 +130,8 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 }
 
             }
-            Debug.WriteLine("Hello");
             setColBasedOnValue();
             line.Color = colour;
-            //line.Data.GetScatterPoints().
             
             line.Label = $"T: {temperature}K";
             scottForm.Refresh();
@@ -166,12 +163,6 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             double proportion = ((double)highestIndex / (double)datapointsInvisibleRange);
             double scalar = Math.Log10(proportion);
             colour = new((byte)((proportion)*255), (byte)50, (byte)((1 - proportion) * 255));
-            
-            Debug.WriteLine(proportion);
-            Debug.WriteLine(highestIndex);
-            Debug.WriteLine((proportion) * 255);
-            
-            //new ScottPlot.Color = new()
         }
     }
 }

@@ -111,22 +111,14 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         }
         public void updateCheckList(object sender, ItemCheckEventArgs e)
         {
-            
-            Debug.WriteLine(checkedListBox1.CheckedItems.Count);
-            Debug.WriteLine(checklistPrev.Count);
             string currentItem = checkedListBox1.Items[e.Index].ToString();
             if (checklistPrev.Contains(currentItem))
             {
-                Debug.WriteLine("Remove");
-                Debug.WriteLine("Found mssing item");
                 double temp = int.Parse(currentItem.ToString().Split("- ")[1][0..^1]);
                 foreach (GraphLine line in graphs)
                 {
-                    Debug.WriteLine("temp" + line.getTemp);
                     if (line.id == currentItem)
                     {
-                        Debug.WriteLine("temp" + line.getTemp);
-                        Debug.WriteLine("Removed Line");
                         formsPlot1.Plot.Remove(line.line);
                         graphs.Remove(line);
                         line.Dispose();
