@@ -51,7 +51,6 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 {
                     if (toggleForMouse == false)
                     {
-                        graphs[i].slider.Visible = false;
                         graphs[i].unhighlightLine();
                     }
                     DataPoint nearest = rbNearestXY
@@ -72,7 +71,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                     if (toggleForMouse == false)
                     {
                         graphs[specificGraphI].highlightLine();
-                        graphs[specificGraphI].slider.Visible = true;
+                        
                         crosshair.IsVisible = true;
                         crosshair.Position = closestPoint.Coordinates;
                         formsPlot1.Refresh();
@@ -144,7 +143,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
         private GraphLine generateLine(double minWavelength, double maxWavelength, double temp, string id)
         {
-            GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, this, formsPlot1, id);
+            GraphLine line = new GraphLine(minWavelength, maxWavelength, temp, this, formsPlot1, id, graphs);
 
             return line;
         }

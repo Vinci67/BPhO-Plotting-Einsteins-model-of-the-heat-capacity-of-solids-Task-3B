@@ -32,7 +32,9 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         private double minVisW = 0;
         private double maxVisW = 750E-9;
 
-        public GraphLine(double minWavelength, double maxWavelength, double temp, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id)
+        public Button removeButton;
+
+        public GraphLine(double minWavelength, double maxWavelength, double temp, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id, List<GraphLine> graphs)
         {
 
             temperature = temp;
@@ -42,7 +44,12 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             
             line = generatePlot(scottForm, minWavelength,maxWavelength, temp);
             slider = generateSlider(form,0,120);
+            
             this.id = id;
+            if (this.id == "generic")
+            {
+                removeButton = generateRemoveButton(form, graphs, scottForm);
+            }
             
         }
         private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm, double minWavelength, double maxWavelength, double temp)
@@ -80,6 +87,24 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             return line;
         }
 
+        private System.Windows.Forms.Button generateRemoveButton(Form1 form, List<GraphLine> graphs, ScottPlot.WinForms.FormsPlot formsPlot)
+        {
+            removeButton = new System.Windows.Forms.Button();
+            removeButton.Click += (s, e) =>
+            {
+                this.Dispose();
+                formsPlot.Plot.Remove(this.line);
+                graphs.Remove(this);
+                formsPlot.Refresh();
+            };
+            formsPlot.Controls.Add(removeButton);
+            removeButton.BringToFront();
+            removeButton.Visible = false;
+            removeButton.Text = "Remove Line";
+            removeButton.Location = new Point(200, 40);
+            
+            return removeButton;
+        }
         private System.Windows.Forms.TrackBar generateSlider(Form1 form, int min, int max)
         {
             System.Windows.Forms.TrackBar slider = new System.Windows.Forms.TrackBar();
@@ -145,16 +170,32 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
         public void highlightLine()
         {
             line.Color = ScottPlot.Colors.Gray;
+            showControls();
         }
 
         public void unhighlightLine()
         {
             line.Color = colour;
+            hideControls();
+        }
+
+        public void hideControls()
+        {
+            slider.Visible = false;
+            if (id == "generic") removeButton.Visible = false;
+
+        }
+        public void showControls()
+        {
+            slider.Visible = true;
+            if (id == "generic") removeButton.Visible = true;
         }
 
         public void Dispose()
         {
-            slider.Dispose();
+            if (slider != null) slider.Dispose();
+            if (removeButton != null) removeButton.Dispose();
+
 
         }
 
