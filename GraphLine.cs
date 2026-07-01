@@ -10,8 +10,11 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 {
     internal class GraphLine : IDisposable
     {
+       
         public ScottPlot.Plottables.Scatter line;
         public TrackBar slider;
+        private bool isDefaultColour = false;
+        private ScottPlot.Color defaultColour;
         private double h = 6.62607015E-34; // Planck's constant  m2 kg / s
         private double kB = 1.380649E-23; // Blotzman Constant m2 kg s - 2 K-1
         private double R = 8.314; // Molar gas constant J/mol/K
@@ -50,6 +53,27 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                 removeButton = generateRemoveButton(form, graphs, scottForm);
             }
             
+        }
+
+        public GraphLine(double tempDebye, double tempMax, Form1 form, ScottPlot.WinForms.FormsPlot scottForm, string id, List<GraphLine> graphs, ScottPlot.Color defaultColour)
+        {
+            this.tempDebye = tempDebye;
+            this.scottForm = scottForm;
+            this.maxKelvin = tempMax;
+
+            slider = generateSlider(form, 100, 2500);
+            line = generatePlot(scottForm, maxKelvin);
+
+
+            this.id = id;
+            if (this.id == "generic")
+            {
+                removeButton = generateRemoveButton(form, graphs, scottForm);
+            }
+            isDefaultColour = true;
+            line.Color = defaultColour;
+            this.defaultColour = defaultColour;
+
         }
         private ScottPlot.Plottables.Scatter generatePlot(ScottPlot.WinForms.FormsPlot scottForm,double maxTemp)
         {
@@ -208,6 +232,10 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
         private ScottPlot.Color setColBasedOnValue()
         {
+            if (isDefaultColour)
+            {
+                return defaultColour;
+            }
             ScottPlot.Color colour;
             double proportion = ((double)(MolarHeatCapcity[(int)highestIndex]-minMolarHC)/ (double)(maxMolarHC-minMolarHC));
             //double scalar = Math.Log10(1+proportion*10);

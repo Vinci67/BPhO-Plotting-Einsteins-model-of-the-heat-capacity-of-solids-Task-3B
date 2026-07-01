@@ -10,7 +10,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
     public partial class Form1 : Form
     {
-
+        private bool showDefaultColours = true;
         public double h = 6.626E-34;
         public double kB = 1.381E-23;
         public double c = 2.998E8;
@@ -36,7 +36,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
             graphs.Add(generateLine(150, maxTemp, "generic"));
             graphs.Add(generateLine(800, maxTemp, "generic"));
             formsPlot1.Plot.XLabel("T /K");
-            formsPlot1.Plot.YLabel("Molar heat Capacity / (J/mol/K)");
+            formsPlot1.Plot.YLabel("Molar Heat Capacity / (J/mol/K)");
             formsPlot1.Plot.Title("Einstein model of solid molar heat capacity");
             formsPlot1.Refresh();
             crosshair = formsPlot1.Plot.Add.Crosshair(10, 10);
@@ -105,7 +105,17 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
 
         private GraphLine generateLine(double tempDebye, double tempMax, string id)
         {
-            GraphLine line = new GraphLine(tempDebye, tempMax, this, formsPlot1, id, graphs);
+            GraphLine line;
+            if (showDefaultColours && id.Contains("-"))
+            {
+                ScottPlot.Color dcolour = ScottPlot.Colors.RandomHue(1)[0];
+                line = new GraphLine(tempDebye, tempMax, this, formsPlot1, id, graphs, dcolour);
+            }
+            else
+            {
+                line = new GraphLine(tempDebye, tempMax, this, formsPlot1, id, graphs);
+            }
+             
 
             return line;
         }
@@ -188,7 +198,7 @@ namespace BPhO__Plotting_Planck_Spectrum_Task_3
                     crosshair.IsVisible = true;
                     crosshair.Position = closestPoint.Coordinates;
                     formsPlot1.Refresh();
-                    Text = $"Wavelength={closestPoint.X:0.##}nm, Y={closestPoint.Y * 1E4:0.##}Wm^-2/nm";//Selected Index={closestPoint.Index},
+                    Text = $"T={closestPoint.X:0.##}K, HC={closestPoint.Y:0.##}J/mol/K";//Selected Index={closestPoint.Index},
                 }
 
 
